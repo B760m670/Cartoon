@@ -1,0 +1,6 @@
+# Готовые видео и кадры — результат рендера, в git не храним
+output/*
+!output/.gitkeep
+__pycache__/
+*.pyc
+.venv/

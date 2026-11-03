@@ -1,0 +1,7 @@
+type: title
+duration: 3
+background: {type: solid, color: "#7E57C2"}
+text: "Круг и Квадрат"
+subtitle: "серия 0: Знакомство"
+fade_in: 0
+fade_out: 0.5

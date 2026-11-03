@@ -1,0 +1,12 @@
+# Тестовый эпизод: проверка пайплайна рендера.
+title: "Знакомство"
+fps: 24
+width: 1280
+height: 720
+# Порядок сцен. Если убрать список — возьмутся все scenes/*.yaml по алфавиту.
+scenes:
+  - 01_zastavka.yaml
+  - 02_vstrecha.yaml
+  - 03_noch.yaml
+# music: theme.mp3      # файл из assets/audio, подмешивается ко всему эпизоду
+# music_volume: 0.3

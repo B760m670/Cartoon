@@ -1,0 +1,19 @@
+# Ночь: камера медленно наезжает
+duration: 5
+background: {type: night}
+tint: {color: "#0B1033", opacity: 0.3}
+fade_out: 0.8
+
+camera:
+  - {t: 0, zoom: 1.0, x: 640, y: 360}
+  - {t: 3.5, zoom: 1.5, x: 640, y: 470, ease: in_out}
+
+actors:
+  - character: krug
+    start: {x: 540, y: 610, facing: 1, scale: 0.9}
+    actions:
+      - {t: 0.8, type: say, text: "Спокойной ночи!", duration: 1.8}
+  - character: kvadrat
+    start: {x: 760, y: 615, facing: -1, scale: 0.9}
+    actions:
+      - {t: 2.8, type: say, text: "Спокойной…", duration: 1.6}

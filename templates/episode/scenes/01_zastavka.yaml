@@ -1,0 +1,6 @@
+type: title
+duration: 3
+background: {type: solid, color: "#7E57C2"}
+text: "Название"
+subtitle: "подзаголовок"
+fade_in: 0

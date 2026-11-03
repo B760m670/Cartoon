@@ -1,0 +1,10 @@
+duration: 5
+background: {type: meadow}
+actors:
+  - character: krug
+    start: {x: -120, y: 610}
+    keyframes:
+      - {t: 0, x: -120}
+      - {t: 1.5, x: 640, ease: out}
+    actions:
+      - {t: 1.6, type: say, text: "Привет!"}
