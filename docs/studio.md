@@ -58,3 +58,20 @@ actors:
 - `fireflies` prop: `start`/`keys` take `x, y, amount (0–1), radius, rise (0–1, flies up and away), z`. Glow uses additive blending.
 - Location `night_meadow`: moon at (520, 190), twinkling stars, drifting haze.
 - `close_eyes` with a full blink now draws calm closed-eye arcs.
+
+## Rain, puddles, rainbow (added in episode 3)
+
+- Scene `env: {start: {rain: 1}, keys: [{t: 4, rain: 0, clear: 0.7}]}` animates location state. `rainy_meadow` reads `rain` and `clear`; `meadow` reads `rainbow` (0–1) and `rain`.
+- `puddle` prop: `splash` 0→1 keyed over ~0.8 s throws droplets; `sky` sets the reflection colour.
+- `leaf` prop: a big leaf umbrella. `follow: tosha` makes `x, y` an offset from the character's feet, including jumps.
+- Sounds: `{kind: rain, dur: 8, volume: 0.5}` and `{kind: splash}`.
+
+## YouTube thumbnails
+
+Add to `episode.yaml`:
+
+```yaml
+thumbnail: {scene: 04_puddles, t: 2.7, title: ["RAINY", "DAY!"], color: "#6FC3FF", side: right, episode: 3, zoom: 1.1, focus: [820, 600]}
+```
+
+`python -m studio thumbnail 003_rainy_day` writes `output/<ep>/<ep>_thumbnail.jpg` (1280×720, ~130 KB). It uses a frame without subtitles, crops with `zoom`/`focus` and adds the title, the episode badge and the show name. Put the title on the side away from the characters.

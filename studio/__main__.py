@@ -4,6 +4,7 @@
   python -m studio render 001_big_red_apple --preview  — быстро, 960x540
   python -m studio render 001_big_red_apple -s 02_the_apple
   python -m studio still 001_big_red_apple 02_the_apple 3.5   — кадр в PNG
+  python -m studio thumbnail 001_big_red_apple         — обложка YouTube 1280x720 (раздел thumbnail в episode.yaml)
 """
 
 import argparse
@@ -24,7 +25,14 @@ def main(argv=None):
     s.add_argument("scene")
     s.add_argument("time", type=float)
     s.add_argument("--preview", action="store_true")
+    th = sub.add_parser("thumbnail")
+    th.add_argument("episode", nargs="+")
     a = p.parse_args(argv)
+    if a.cmd == "thumbnail":
+        from .thumbnail import render_thumbnail
+        for e in a.episode:
+            render_thumbnail(e)
+        return
     if a.cmd == "render":
         render_episode(a.episode, a.scene, a.preview, a.jobs)
     else:

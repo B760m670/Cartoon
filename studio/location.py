@@ -57,6 +57,7 @@ class Location:
         self.light = light
         self.anchors = getattr(mod, "ANCHORS", {})
         self.ground_y = getattr(mod, "GROUND_Y", 940)
+        self.env = {}
         self.layers = []
         q = config.LAYER_QUALITY
         for spec in mod.LAYERS:
@@ -92,12 +93,14 @@ class Location:
             c.scale(1 / q, 1 / q)
             c.drawImage(layer["image"], 0, 0, sampling)
             c.restore()
+            self.mod.ENV = self.env
             dyn = getattr(self.mod, "dynamic", None)
             if dyn:
                 dyn(c, layer["name"], t, self.light)
             c.restore()
 
     def screen_effects(self, c, t):
+        self.mod.ENV = self.env
         fx = getattr(self.mod, "screen_effects", None)
         if fx:
             fx(c, t, self.light)
@@ -160,3 +163,46 @@ def motes(c, t, n=30, seed=4, color="#FFF6C8", W=config.W, H=config.H):
         a = 0.35 + 0.35 * math.sin(t * 2 + ph)
         c.drawCircle(x, y, r * 3, skx.fill(color, a * 0.25, blur=r * 2))
         c.drawCircle(x, y, r, skx.fill(color, a))
+
+
+_RAIN = [(random.Random(i).uniform(0, 1), random.Random(i * 5 + 1).uniform(0, 1), random.Random(i * 11 + 3).uniform(0.6, 1.4))
+         for i in range(260)]
+
+
+def rain(c, t, amount=1.0, wind=0.18, W=config.W, H=config.H):
+    """Дождь в экранных координатах: косые штрихи разной глубины + круги на земле."""
+    if amount <= 0.01:
+        return
+    n = int(len(_RAIN) * amount)
+    for i, (u, v, d) in enumerate(_RAIN[:n]):
+        sp = 1500 * d
+        y = (v * (H + 300) + t * sp) % (H + 300) - 150
+        x = (u * (W + 400) + y * wind) % (W + 400) - 200
+        L = 46 * d
+        p = skia.Paint(AntiAlias=True, Color=skx.rgb("#DDE8F8", 0.35 * d * min(1, amount * 1.5)), StrokeWidth=1.4 * d,
+                       StrokeCap=skia.Paint.kRound_Cap)
+        c.drawLine(x, y, x - wind * L, y - L, p)
+    # кружки от капель на земле
+    rnd = random.Random(int(t * 10))
+    for k in range(int(14 * amount)):
+        ph = (t * 10) % 1
+        x = rnd.uniform(0, W)
+        y = rnd.uniform(H * 0.82, H)
+        r = 6 + ph * 18 * (y / H)
+        c.drawOval(skia.Rect.MakeXYWH(x - r, y - r * 0.3, r * 2, r * 0.6), skx.stroke("#E8F0FF", 1.5, 0.45 * (1 - ph) * amount))
+
+
+RAINBOW = ["#FF4D4D", "#FF9A3C", "#FFE14D", "#6BD66B", "#4DB4FF", "#6A6BFF", "#B06BFF"]
+
+
+def rainbow(c, cx, cy, r, amount, band=20):
+    """Радуга-дуга с центром (cx, cy). amount 0..1 — проявление (прозрачность и «раскрытие» дуги)."""
+    if amount <= 0.01:
+        return
+    sweep = 180 * min(1.0, amount * 1.6)
+    for i, col in enumerate(RAINBOW):
+        rr = r - i * band
+        p = skx.stroke(col, band + 1, 0.5 * amount, blur=3)  # MaskFilter-размытие: в разы быстрее ImageFilter
+        c.drawArc(skia.Rect.MakeLTRB(cx - rr, cy - rr, cx + rr, cy + rr), 180, sweep, False, p)
+    c.drawArc(skia.Rect.MakeLTRB(cx - r - 30, cy - r - 30, cx + r + 30, cy + r + 30), 180, sweep, False,
+              skx.stroke("#FFFFFF", 50, 0.12 * amount))

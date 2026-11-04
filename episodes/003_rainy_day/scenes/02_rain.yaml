@@ -1,0 +1,18 @@
+# Буся прячется от дождя под яблоней
+location: rainy_meadow
+actor_tint: {color: "#8C9AB8", alpha: 0.32}
+duration: 8
+camera:
+  - {t: 0, x: 1150, y: 560, zoom: 1.08}
+  - {t: 8, x: 1220, y: 640, zoom: 1.32, ease: in_out}
+sounds:
+  - {t: 0, kind: rain, dur: 8, volume: 0.5}
+actors:
+  - character: busya
+    start: {x: 1250, y: 960, turn: 0.15, scale: 0.92, mood: sad, look_y: -0.6, facing: -1, arm_l: [6, 30], arm_r: [6, 30]}
+    keys:
+      - {t: 3.2, look_y: -0.6, tilt: 0}
+      - {t: 4.2, look_y: 0.5, tilt: 10, ease: in_out}
+    actions:
+      - {t: 0.8, do: say, text: "Oh no... it's raining again."}
+      - {t: 4.4, do: say, text: "Now we can't play outside."}

@@ -1,0 +1,13 @@
+engine: studio
+title: "Tosha & Busya: The Rainy Day"
+fps: 24
+scenes:
+  - 01_title.yaml
+  - 02_rain.yaml
+  - 03_leaf_umbrella.yaml
+  - 04_puddles.yaml
+  - 05_rain_stops.yaml
+  - 06_rainbow.yaml
+music: {style: cheerful, bpm: 96, key: G, volume: 0.2, seed: 11, duck: 0.6}
+post: {bloom: 0.3, vignette: 0.34, saturation: 1.05, warmth: 0.0}
+thumbnail: {scene: 04_puddles, t: 2.7, title: ["RAINY", "DAY!"], color: "#6FC3FF", side: right, episode: 3, zoom: 1.1, focus: [820, 600]}

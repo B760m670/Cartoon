@@ -58,7 +58,12 @@ LAYERS = [
 ]
 
 
+ENV = {}
+
+
 def dynamic(c, layer, t, L):
+    if layer == "far":
+        location.rainbow(c, 980, 760, 820, float(ENV.get("rainbow", 0) or 0))
     if layer == "sky":
         for i, (x, y, s, v) in enumerate([(200, 210, 1.1, 9), (900, 120, 0.8, 6), (1300, 300, 0.65, 11), (-400, 170, 0.9, 8)]):
             xx = (x + t * v + 700) % 3000 - 700
@@ -66,5 +71,6 @@ def dynamic(c, layer, t, L):
 
 
 def screen_effects(c, t, L):
+    location.rain(c, t, float(ENV.get("rain", 0) or 0))
     location.light_rays(c, t, SUN, alpha=0.10)
     location.motes(c, t, n=26)

@@ -1,0 +1,33 @@
+# Дождь кончается, тучи уходят
+location: rainy_meadow
+actor_tint: {color: "#A6B2C8", alpha: 0.22}
+duration: 6.5
+fade_out: 0.6
+env:
+  start: {rain: 1, clear: 0}
+  keys:
+    - {t: 0.6, rain: 1, clear: 0}
+    - {t: 3.6, rain: 0, clear: 0.7, ease: in_out}
+camera:
+  - {t: 0, x: 1000, y: 620, zoom: 1.25}
+  - {t: 6.5, x: 1000, y: 470, zoom: 1.05, ease: in_out}
+sounds:
+  - {t: 0, kind: rain, dur: 3.8, volume: 0.5}
+props:
+  - {type: puddle, start: {x: 980, y: 975, z: -1}}
+  - {type: leaf, follow: tosha, start: {x: 62, y: -300, z: -0.5}}
+actors:
+  - character: busya
+    start: {x: 1100, y: 960, turn: 0.45, scale: 0.92, facing: -1, mood: happy}
+    keys:
+      - {t: 2.2, look_y: 0, look_x: 0}
+      - {t: 2.9, look_y: -0.8, look_x: 0.2, ease: in_out}
+    actions:
+      - {t: 3.0, do: mood, mood: surprised}
+      - {t: 4.0, do: mood, mood: excited}
+      - {t: 4.0, do: say, text: "Look! The rain stopped!"}
+  - character: tosha
+    start: {x: 860, y: 950, turn: 0.45, arm_r: [168, -10], mood: happy}
+    keys:
+      - {t: 2.6, look_y: 0}
+      - {t: 3.3, look_y: -0.8, ease: in_out}

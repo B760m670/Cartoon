@@ -1,0 +1,44 @@
+# Прыжки по лужам
+location: rainy_meadow
+actor_tint: {color: "#8C9AB8", alpha: 0.32}
+duration: 9
+camera:
+  - {t: 0, x: 980, y: 640, zoom: 1.2}
+  - {t: 9, x: 980, y: 660, zoom: 1.3, ease: in_out}
+sounds:
+  - {t: 0, kind: rain, dur: 9, volume: 0.5}
+  - {t: 2.2, kind: splash, volume: 1.0}
+  - {t: 4.4, kind: splash, volume: 1.0}
+props:
+  - id: puddle
+    type: puddle
+    start: {x: 980, y: 975, z: -1, splash: 0}
+    keys:
+      - {t: 2.2, splash: 0}
+      - {t: 3.0, splash: 1, ease: out}
+      - {t: 3.02, splash: 0}
+      - {t: 4.4, splash: 0}
+      - {t: 5.2, splash: 1, ease: out}
+      - {t: 5.22, splash: 0}
+  - {type: leaf, follow: tosha, start: {x: 62, y: -300, z: -0.5}}
+actors:
+  - character: busya
+    start: {x: 1300, y: 960, turn: 0.45, scale: 0.92, facing: -1, mood: excited}
+    keys:
+      - {t: 1.4, x: 1300}
+      - {t: 2.2, x: 1050, ease: in_out}
+    actions:
+      - {t: 1.4, do: jump, height: 150, duration: 0.8}
+      - {t: 1.6, do: say, text: "Wheee!"}
+      - {t: 3.0, do: mood, mood: happy}
+      - {t: 5.8, do: mood, mood: excited}
+      - {t: 5.9, do: say, text: "This is the best rainy day ever!"}
+  - character: tosha
+    start: {x: 640, y: 950, turn: 0.45, arm_r: [168, -10], mood: excited}
+    keys:
+      - {t: 3.5, x: 640}
+      - {t: 4.4, x: 880, ease: in_out}
+    actions:
+      - {t: 3.5, do: jump, height: 140, duration: 0.9}
+      - {t: 4.4, do: say, text: "Splash!"}
+      - {t: 5.4, do: mood, mood: happy}

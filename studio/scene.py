@@ -52,7 +52,49 @@ def _fireflies(c, st, L, t):
         c.drawCircle(x, y, 5, skx.fill("#E8F870", 0.9 * blink, blend=skia.BlendMode.kPlus))
 
 
-PROPS = {"apple": _apple, "fireflies": _fireflies}
+def _puddle(c, st, L, t):
+    """Лужа: голубое отражение неба, блик; splash 0..1 — брызги разлетаются дугами."""
+    w, h = 170, 34
+    c.drawOval(skia.Rect.MakeXYWH(-w - 8, -h - 4, 2 * w + 16, 2 * h + 8), skx.fill("#3D5A3A", 0.5, blur=4))
+    c.drawOval(skia.Rect.MakeXYWH(-w, -h, 2 * w, 2 * h),
+               skx.fill("#000", shader=skx.linear((0, -h), (0, h), [st.get("sky", "#9DB4D6"), "#5F7FA8"])))
+    c.drawOval(skia.Rect.MakeXYWH(-w * 0.6, -h * 0.6, w * 0.7, h * 0.35), skx.fill("#FFFFFF", 0.45))
+    # круги на воде
+    for k in range(3):
+        ph = (t * 0.8 + k / 3) % 1
+        rx = 20 + ph * 120
+        c.drawOval(skia.Rect.MakeXYWH(-rx + (k - 1) * 50, -rx * 0.2, rx * 2, rx * 0.4), skx.stroke("#FFFFFF", 2, 0.35 * (1 - ph)))
+    sp = float(st.get("splash", 0))
+    if 0.01 < sp < 0.99:
+        rnd = random.Random(3)
+        for i in range(22):
+            a = math.pi * rnd.uniform(0.08, 0.92)
+            v = rnd.uniform(260, 520)
+            x = math.cos(a) * v * sp * 1.1
+            y = -math.sin(a) * v * sp + 900 * sp * sp * 0.9
+            r = rnd.uniform(6, 13) * (1 - sp * 0.6)
+            c.drawCircle(x, y - 10, r, skx.fill("#CFE3FF", 0.85))
+            c.drawCircle(x - r * 0.3, y - 10 - r * 0.3, r * 0.35, skx.fill("#FFFFFF", 0.9))
+        ring = sp * 220
+        c.drawOval(skia.Rect.MakeXYWH(-ring, -ring * 0.22, ring * 2, ring * 0.44), skx.stroke("#FFFFFF", 4, 0.7 * (1 - sp)))
+
+
+def _leaf(c, st, L, t):
+    """Большой лист-зонтик: держится над головой (рисуется с центром в черенке)."""
+    from .skx import cel
+    sway = math.sin(t * 2.2) * 3
+    c.rotate(sway)
+    stem = skx.smooth_open([(0, 0), (6, -90), (0, -190)])
+    c.drawPath(stem, skx.stroke("#3E6B2A", 9))
+    leaf = skx.smooth_closed([(-230, -150), (-120, -235), (0, -260), (130, -235), (240, -150), (120, -175), (0, -170), (-120, -178)],
+                             tension=0.85)
+    cel(c, leaf, "#4FA83D", L, 260, line_w=4)
+    for x in (-150, -75, 75, 150):
+        c.drawPath(skx.smooth_open([(0, -200), (x * 0.6, -215), (x, -195)]), skx.stroke("#2F7A2A", 3, 0.7))
+    c.drawPath(skx.smooth_open([(-200, -165), (0, -205), (200, -165)]), skx.stroke("#2F7A2A", 4, 0.8))
+
+
+PROPS = {"apple": _apple, "fireflies": _fireflies, "puddle": _puddle, "leaf": _leaf}
 
 
 def load_character(cid):
@@ -71,13 +113,14 @@ class Prop:
         start.update(spec.get("start", {}))
         self.track = Track(spec.get("keys", []), start)
         self.events = spec.get("sounds", [])
+        self.follow = spec.get("follow")  # id персонажа: тогда x, y — смещение от его ног (с учётом прыжка)
 
-    def draw(self, c, t, L):
+    def draw(self, c, t, L, base=(0.0, 0.0)):
         st = self.track.state(t)
         if not st["visible"]:
             return
         c.save()
-        c.translate(float(st["x"]), float(st["y"]))
+        c.translate(float(st["x"]) + base[0], float(st["y"]) + base[1])
         c.rotate(float(st["rot"]))
         c.scale(float(st["scale"]), float(st["scale"]))
         PROPS[self.type](c, st, L, t)
@@ -100,6 +143,8 @@ class Scene:
             cs = load_character(a["character"])
             self.actors.append(Actor(a, Critter(a["character"], cs, self.light), cs, self.fps, voice_cache, self.light))
         self.props = [Prop(p) for p in spec.get("props", [])]
+        env = spec.get("env", {})  # {start: {rain: 1}, keys: [{t: 5, rain: 0}]} — состояние локации (дождь, радуга)
+        self.env = Track(env.get("keys", []), env.get("start", {}))
         self.camera = Track(spec.get("camera", []), {"x": 960, "y": 540, "zoom": 1.0, "shake": 0.0})
         self.post = Post(width, height, spec.get("post", episode.get("post")))
         self.fade_in = float(spec.get("fade_in", 0.35))
@@ -120,12 +165,16 @@ class Scene:
         sh = float(st["shake"])
         cam = location.Camera(float(st["x"]) + math.sin(t * 47) * sh, float(st["y"]) + math.cos(t * 53) * sh, float(st["zoom"]))
         if self.loc:
+            self.loc.env = {k: self.env.value(k, t) for k in set(self.env.props) | set(self.env.defaults)}
             self.loc.draw_layers(c, cam, t, "back")
         poses = [(a, a.pose(t)) for a in self.actors]
+        anchor = {a.id: (p.x, p.y - p.lift) for a, p in poses}
         c.save()
         c.concat(cam.matrix(1.0))
         drawables = [((float(a.track.value("z", t) or 0), p.y), "actor", (a, p)) for a, p in poses]
-        drawables += [((float(pr.track.value("z", t) or 0), float(pr.track.value("y", t))), "prop", pr) for pr in self.props]
+        def _py(pr):
+            return float(pr.track.value("y", t)) + (anchor.get(pr.follow, (0, 0))[1] if pr.follow else 0)
+        drawables += [((float(pr.track.value("z", t) or 0), _py(pr)), "prop", pr) for pr in self.props]
         for _, kind, obj in sorted(drawables, key=lambda d: d[0]):
             if kind == "actor":
                 if self.tint is not None:
@@ -136,7 +185,7 @@ class Scene:
                 else:
                     obj[0].c.draw(c, obj[1])
             else:
-                obj.draw(c, t, self.light)
+                obj.draw(c, t, self.light, anchor.get(obj.follow, (0.0, 0.0)) if obj.follow else (0.0, 0.0))
         c.restore()
         if self.loc:
             self.loc.draw_layers(c, cam, t, "front")

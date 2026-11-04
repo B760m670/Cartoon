@@ -68,7 +68,31 @@ def whoosh(dur=0.35):
     return noise * shape * 0.6
 
 
-SYNTHS = {"blip": blip, "boing": boing, "pop": pop, "chime": chime, "whoosh": whoosh}
+def rain(dur=8.0):
+    """Шум дождя: мягкий «розовый» шум + редкие капли."""
+    n = int(RATE * dur)
+    rng = np.random.default_rng(5)
+    noise = rng.standard_normal(n)
+    noise = np.convolve(noise, np.ones(6) / 6, mode="same") - np.convolve(noise, np.ones(120) / 120, mode="same")
+    drops = np.zeros(n)
+    for i in rng.integers(0, max(1, n - 800), int(dur * 30)):
+        k = np.arange(600)
+        drops[i:i + 600] += np.sin(k * rng.uniform(0.12, 0.3)) * np.exp(-k / 90) * rng.uniform(0.1, 0.35)
+    edge = np.minimum(1, np.minimum(np.arange(n), n - np.arange(n)) / (RATE * 0.6))
+    return (noise * 0.35 + drops) * edge
+
+
+def splash(dur=0.5):
+    n = int(RATE * dur)
+    rng = np.random.default_rng(9)
+    noise = rng.standard_normal(n)
+    noise = noise - np.convolve(noise, np.ones(40) / 40, mode="same")
+    k = np.arange(n)
+    blub = np.sin(2 * np.pi * (300 - 180 * k / n) * k / RATE) * np.exp(-k / (RATE * 0.06))
+    return (noise * np.exp(-k / (RATE * 0.12)) * 0.7 + blub * 0.5)
+
+
+SYNTHS = {"blip": blip, "boing": boing, "pop": pop, "chime": chime, "whoosh": whoosh, "rain": rain, "splash": splash}
 
 
 def render_track(events: list[dict], duration: float) -> np.ndarray:
