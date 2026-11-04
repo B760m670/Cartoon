@@ -51,3 +51,10 @@ actors:
 
 ## Скорость
 4 ядра без видеокарты: ~0,2 с на кадр Full HD, серия 45 с — около 2 минут.
+
+## Night scenes (added in episode 2)
+
+- `actor_tint: {color: "#5868B8", alpha: 0.4}` puts moonlight on the characters: each actor is multiplied by a colour mixed between white and `color`.
+- `fireflies` prop: `start`/`keys` take `x, y, amount (0–1), radius, rise (0–1, flies up and away), z`. Glow uses additive blending.
+- Location `night_meadow`: moon at (520, 190), twinkling stars, drifting haze.
+- `close_eyes` with a full blink now draws calm closed-eye arcs.
