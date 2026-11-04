@@ -43,9 +43,13 @@ def build_scene(ep_dir: Path, spec: dict, path: Path, preview: bool, vertical=Fa
     return Scene(path.stem, yaml.safe_load(path.read_text(encoding="utf-8")), spec, w, h, cache)
 
 
-def render_scene(ep_name, scene_path, out_dir, preview, vertical=False):
+def render_scene(ep_name, scene_path, out_dir, preview, vertical=False, first=False):
     ep_dir, spec, _ = load_episode(ep_name)
     scene = build_scene(ep_dir, spec, Path(scene_path), preview, vertical)
+    if vertical and first:
+        # Shorts: без затемнения в начале и с «крючком» — крупной фразой на первые секунды
+        scene.fade_in = 0
+        scene.hook = (spec.get("shorts") or {}).get("hook")
     fps = spec.get("fps", config.FPS)
     out = Path(out_dir) / f"{scene.id}.mp4"
     frames = int(round(scene.duration * fps))
@@ -69,6 +73,9 @@ def render_episode(name, only=None, preview=False, jobs=None, vertical=False):
     ep_dir, spec, files = load_episode(name)
     if only:
         files = [f for f in files if f.stem in only]
+    if vertical:
+        # в Shorts заставку пролистывают — сразу начинаем с действия
+        files = [f for f in files if (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("type") != "title"]
     out_root = config.OUTPUT_DIR / ep_dir.name
     scenes_dir = out_root / (("v_" if vertical else "") + ("preview" if preview else "scenes"))
     scenes_dir.mkdir(parents=True, exist_ok=True)
@@ -77,7 +84,7 @@ def render_episode(name, only=None, preview=False, jobs=None, vertical=False):
     print(f"▶ {title}: {len(files)} сцен, {'превью' if preview else 'Full HD'}{' 9:16' if vertical else ''}, потоков {jobs}")
     started = time.time()
     with ProcessPoolExecutor(max_workers=jobs) as pool:
-        futs = [pool.submit(render_scene, str(ep_dir), str(f), str(scenes_dir), preview, vertical) for f in files]
+        futs = [pool.submit(render_scene, str(ep_dir), str(f), str(scenes_dir), preview, vertical, i == 0) for i, f in enumerate(files)]
         parts = []
         for f in futs:
             out, frames, secs = f.result()

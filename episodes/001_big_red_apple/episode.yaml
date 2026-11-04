@@ -12,3 +12,4 @@ scenes:
 music: {style: cheerful, bpm: 100, key: F, volume: 0.24, seed: 3, duck: 0.6}
 post: {bloom: 0.3, vignette: 0.3, saturation: 1.08, warmth: 0.03}
 thumbnail: {scene: 05_teamwork, t: 3.0, title: ["THE BIG", "RED APPLE!"], color: "#FF5A4D", side: left, episode: 1, zoom: 1.3, focus: [700, 560]}
+shorts: {hook: "Can they get the apple?"}

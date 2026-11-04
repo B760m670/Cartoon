@@ -159,6 +159,7 @@ class Scene:
         last_line = max([end for a in self.actors for (_, end, *_r) in a.lines] + [0])
         self.duration = float(spec.get("duration", last_line + 1.0))
         self.surface = skia.Surface(width, height)
+        self.hook = None
         tint = spec.get("actor_tint")  # {color: "#6A7BC8", alpha: 0.45} — освещение сцены на героях (ночь, закат)
         self.tint = skx.rgb(skx.mix("#FFFFFF", tint["color"], float(tint.get("alpha", 0.4)))) if tint else None
 
@@ -212,6 +213,8 @@ class Scene:
             self.loc.screen_effects(c, t)
         if self.kind == "title":
             self._title(c, t)
+        if self.hook and t < 3.0:
+            self._hook(c, t)
         if self.spec.get("subtitles", True):
             for a, _ in poses:
                 txt = a.subtitles(t)
@@ -253,6 +256,13 @@ class Scene:
             c.drawRRect(skia.RRect.MakeRectXY(skia.Rect.MakeXYWH(x - w / 2 - 24, y - size * 1.12, w + 48, size * 1.6), 20, 20),
                         skx.fill("#0E0A1A", 0.45))
             skx.text(c, line, x, y, size, "#FFFFFF", "#1A1030", 7)
+
+    def _hook(self, c, t):
+        from cartoon import easing
+        p = easing.back_out(min(1.0, t / 0.35)) if t < 0.35 else 1.0
+        a = min(1.0, (3.0 - t) / 0.4)
+        size = min(76, 76 * self.view_w * 0.88 / max(1, skx.text_width(self.hook, 76))) * max(p, 0.01)
+        skx.text(c, self.hook, config.W / 2, config.H * 0.13, size, "#FFE14D", "#1B0E33", 12, a=a)
 
     def _title(self, c, t):
         title = self.spec.get("text", "")

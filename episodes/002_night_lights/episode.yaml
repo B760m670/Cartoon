@@ -10,3 +10,4 @@ scenes:
 music: {style: gentle, bpm: 78, key: D, volume: 0.22, seed: 8, duck: 0.6}
 post: {bloom: 0.45, vignette: 0.42, saturation: 1.05, warmth: -0.02}
 thumbnail: {scene: 04_fireflies, t: 5.6, title: ["NIGHT", "LIGHTS!"], color: "#D8F55A", side: left, episode: 2, zoom: 1.25, focus: [740, 600]}
+shorts: {hook: "Busya is scared of the dark..."}
