@@ -1,0 +1,18 @@
+# Тоша — медвежонок. Внешность для движка studio (аниме-стиль).
+name: Тоша
+ears: round
+snout: bear
+tail: stub
+fur: "#C98349"
+fur2: "#F4D9B4"
+inner_ear: "#E9B98C"
+eye: "#4A2A18"
+eye2: "#D08A3C"
+nose: "#3B2416"
+cheek: "#FF8E8E"
+head_r: 112
+body_w: 92
+body_h: 98
+accessory: {type: scarf, color: "#2F6FE0"}
+voice: {kokoro: am_puck, pitch: 1.12, speed: 1.0}
+gait: walk

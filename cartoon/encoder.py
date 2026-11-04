@@ -31,6 +31,10 @@ class VideoWriter:
     def write(self, img):
         self.proc.stdin.write(img.tobytes())
 
+    def write_array(self, arr):
+        """Кадр как numpy-массив HxWx3 uint8."""
+        self.proc.stdin.write(arr.tobytes())
+
     def close(self):
         self.proc.stdin.close()
         if self.proc.wait() != 0:

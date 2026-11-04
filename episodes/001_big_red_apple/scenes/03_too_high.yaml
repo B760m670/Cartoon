@@ -1,0 +1,25 @@
+# Тоша прыгает под деревом, но не достаёт
+location: meadow
+duration: 9
+camera:
+  - {t: 0, x: 1200, y: 470, zoom: 1.12}
+  - {t: 6.2, x: 1220, y: 470, zoom: 1.12}
+  - {t: 7.2, x: 1150, y: 600, zoom: 1.4, ease: in_out}
+props:
+  - {type: apple, id: apple, start: {x: 1400, y: 228, scale: 1.25, sparkle: 1}}
+actors:
+  - character: tosha
+    start: {x: 900, y: 950, turn: 0.45, look_y: -0.8, look_x: 0.5}
+    keys:
+      - {t: 0.2, x: 900}
+      - {t: 1.4, x: 1170, ease: in_out}
+      - {t: 5.0, look_y: -0.8, tilt: 0, turn: 0.45, arm_l: [18, 12], arm_r: [18, 12]}
+      - {t: 6.0, look_y: 0.7, look_x: -0.2, tilt: 12, turn: 0.2, arm_l: [4, 4], arm_r: [4, 4], ease: in_out}
+    actions:
+      - {t: 1.5, do: mood, mood: excited}
+      - {t: 1.7, do: jump, height: 160, duration: 1.0}
+      - {t: 2.0, do: say, text: "Hup!"}
+      - {t: 3.4, do: jump, height: 185, duration: 1.05}
+      - {t: 3.3, do: say, text: "Almost... hup!"}
+      - {t: 5.2, do: mood, mood: sad}
+      - {t: 6.6, do: say, text: "It's too high..."}

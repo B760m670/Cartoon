@@ -4,7 +4,13 @@
 что говорит, когда прыгает. Движок рисует кадры (Python + Pillow), синтезирует
 звуки и собирает всё в **MP4-видео** через ffmpeg.
 
-## Быстрый старт
+## Два движка
+
+- **studio** — основной: 2D в аниме-стиле, Full HD, английская озвучка, музыка. См. [docs/studio.md](docs/studio.md).
+  `python -m studio render 001_big_red_apple`
+- **cartoon** — простой движок для быстрых набросков (фигурки, YAML), описан ниже.
+
+## Быстрый старт (cartoon)
 
 ```bash
 pip install -r requirements.txt          # + нужен ffmpeg в системе
@@ -23,6 +29,9 @@ python -m unittest discover tests                    # проверка пайп
 |---|---|
 | `episodes/<id>/` | Эпизод: `story.md` (сюжет), `episode.yaml` (настройки), `scenes/*.yaml` (сцены) |
 | `characters/<id>/` | Персонаж: `character.yaml` (внешность и голос), `bio.md` (характер) |
+| `locations/<id>/` | Локации движка studio: слои фона с параллаксом (`location.py`) |
+| `studio/` | Движок studio (аниме-2D) |
+| `models/` | Скачанные модели голосов (не в git) |
 | `assets/backgrounds/` | Картинки для фонов `type: image` |
 | `assets/audio/` | Музыка для эпизодов |
 | `assets/fonts/` | Свои шрифты (если пусто — системный DejaVu) |

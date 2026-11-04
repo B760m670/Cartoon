@@ -1,0 +1,51 @@
+# Буся запрыгивает Тоше на голову и сбивает яблоко
+location: meadow
+duration: 6.6
+camera:
+  - {t: 0, x: 1230, y: 500, zoom: 1.08}
+  - {t: 3.0, x: 1260, y: 440, zoom: 1.12, ease: in_out}
+  - {t: 3.9, x: 1230, y: 520, zoom: 1.08, shake: 0, ease: in_out}
+  - {t: 4.0, shake: 6}
+  - {t: 4.3, shake: 0}
+props:
+  - id: apple
+    type: apple
+    start: {x: 1400, y: 228, scale: 1.25, sparkle: 1, z: 2}
+    keys:
+      - {t: 3.0, x: 1400, y: 228, rot: 0}
+      - {t: 4.0, x: 1150, y: 965, rot: 260, ease: bounce}
+      - {t: 4.0, sparkle: 1}
+sounds:
+  - {t: 3.0, kind: pop, volume: 0.8}
+  - {t: 3.55, kind: pop, volume: 0.5}
+  - {t: 3.85, kind: pop, volume: 0.35}
+actors:
+  - character: tosha
+    start: {x: 1290, y: 950, turn: 0.15, look_y: -0.6, mood: happy, facing: 1}
+    keys:
+      - {t: 1.5, squash: 0}
+      - {t: 1.62, squash: 0.25, ease: out}
+      - {t: 1.9, squash: 0}
+      - {t: 1.6, look_y: -0.6}
+      - {t: 1.7, look_y: -0.95}
+      - {t: 4.4, facing: 1}
+      - {t: 4.5, facing: -1, look_y: 0.1, turn: 0.4}
+    actions:
+      - {t: 1.6, do: mood, mood: surprised}
+      - {t: 4.4, do: mood, mood: excited}
+      - {t: 4.9, do: say, text: "Wow, you did it!"}
+  - character: busya
+    start: {x: 1000, y: 960, turn: 0.35, scale: 0.92, z: 1, facing: 1}
+    keys:
+      - {t: 0.5, x: 1000, y: 960}
+      - {t: 1.6, x: 1290, y: 540, ease: out}
+      - {t: 3.4, x: 1290, y: 540}
+      - {t: 4.3, x: 1040, y: 960, ease: in}
+      - {t: 4.4, facing: 1}
+      - {t: 4.5, facing: 1, turn: 0.45}
+    actions:
+      - {t: 0.4, do: jump, height: 140, duration: 1.25}
+      - {t: 1.6, do: mood, mood: excited}
+      - {t: 2.0, do: reach, duration: 1.3}
+      - {t: 2.8, do: say, text: "Got it!"}
+      - {t: 3.4, do: jump, height: 110, duration: 0.95}

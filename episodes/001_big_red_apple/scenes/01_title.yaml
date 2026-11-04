@@ -1,0 +1,10 @@
+type: title
+location: meadow
+duration: 4.5
+text: "Tosha & Busya"
+subtitle: "The Big Red Apple"
+fade_in: 0.6
+fade_out: 0.5
+camera:
+  - {t: 0, x: 800, y: 470, zoom: 1.08}
+  - {t: 4.5, x: 1000, y: 500, zoom: 1.0, ease: in_out}

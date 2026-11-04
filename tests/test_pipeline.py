@@ -56,3 +56,20 @@ class RenderTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StudioTest(unittest.TestCase):
+    def test_frame_and_music(self):
+        import numpy as np
+        from studio import music
+        from studio.scene import Scene
+        spec = {"location": "meadow", "duration": 0.5,
+                "actors": [{"character": "tosha", "keys": [{"t": 0, "x": 600}, {"t": 0.5, "x": 700}],
+                            "actions": [{"t": 0.1, "do": "jump"}]}]}
+        sc = Scene("t", spec, {"fps": 24}, 480, 270, Path(tempfile.mkdtemp()))
+        arr = sc.frame(0.25)
+        self.assertEqual(arr.shape, (270, 480, 3))
+        self.assertGreater(arr.std(), 10)
+        m = music.generate(2.0)
+        self.assertEqual(len(m), 2 * 44100)
+        self.assertTrue(np.isfinite(m).all())
