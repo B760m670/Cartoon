@@ -1,0 +1,22 @@
+# Буся одна в темноте
+location: night_meadow
+actor_tint: {color: "#5868B8", alpha: 0.42}
+duration: 7.5
+camera:
+  - {t: 0, x: 1100, y: 560, zoom: 1.05}
+  - {t: 7.5, x: 1180, y: 660, zoom: 1.35, ease: in_out}
+actors:
+  - character: busya
+    start: {x: 1200, y: 960, turn: 0.15, scale: 0.92, mood: sad, look_y: 0.4, tilt: 8, arm_l: [6, 30], arm_r: [6, 30], facing: -1}
+    keys:
+      - {t: 2.6, look_x: 0, look_y: 0.4}
+      - {t: 3.4, look_x: -0.8, look_y: -0.1, turn: 0.45, ease: in_out}
+      - {t: 4.4, look_x: 0.6, turn: -0.1, ease: in_out}
+      - {t: 5.2, look_x: 0, look_y: 0.5, turn: 0.15, tilt: 12, ease: in_out}
+    actions:
+      - {t: 0, do: mood, mood: sad}
+      - {t: 1.0, do: say, text: "It's so dark tonight..."}
+      - {t: 3.3, do: mood, mood: surprised}
+      - {t: 3.3, do: sfx, kind: whoosh, volume: 0.4}
+      - {t: 4.8, do: mood, mood: sad}
+      - {t: 5.2, do: say, text: "I'm a little bit scared."}

@@ -1,0 +1,11 @@
+engine: studio
+title: "Tosha & Busya: The Night Lights"
+fps: 24
+scenes:
+  - 01_title.yaml
+  - 02_alone.yaml
+  - 03_tosha_comes.yaml
+  - 04_fireflies.yaml
+  - 05_good_night.yaml
+music: {style: gentle, bpm: 78, key: D, volume: 0.22, seed: 8, duck: 0.6}
+post: {bloom: 0.45, vignette: 0.42, saturation: 1.05, warmth: -0.02}

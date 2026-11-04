@@ -1,0 +1,31 @@
+# Спокойной ночи — камера поднимается к луне
+location: night_meadow
+actor_tint: {color: "#5868B8", alpha: 0.36}
+duration: 10
+fade_out: 1.6
+camera:
+  - {t: 0, x: 1050, y: 640, zoom: 1.3}
+  - {t: 5.6, x: 1050, y: 640, zoom: 1.3}
+  - {t: 10, x: 700, y: 330, zoom: 1.05, ease: in_out}
+props:
+  - id: swarm
+    type: fireflies
+    start: {x: 1050, y: 640, amount: 1, radius: 480, z: 5}
+    keys:
+      - {t: 4.5, rise: 0}
+      - {t: 10, rise: 1, x: 800, ease: in}
+actors:
+  - character: busya
+    start: {x: 860, y: 960, turn: 0.45, scale: 0.92, facing: 1, mood: happy}
+    actions:
+      - {t: 0.6, do: say, text: "The night isn't scary at all."}
+      - {t: 4.0, do: say, text: "Good night, Tosha."}
+      - {t: 5.2, do: close_eyes, duration: 4.5}
+  - character: tosha
+    start: {x: 1220, y: 950, turn: 0.45, facing: -1, mood: happy}
+    keys:
+      - {t: 2.2, blush: 0}
+      - {t: 2.6, blush: 0.8}
+    actions:
+      - {t: 2.5, do: say, text: "Good night, Busya."}
+      - {t: 5.6, do: close_eyes, duration: 4.0}

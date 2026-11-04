@@ -32,7 +32,27 @@ def _apple(c, st, L, t):
         c.drawCircle(-14, -14, r * 1.4, skx.fill("#FFF6C8", 0.35 * a, blur=10))
 
 
-PROPS = {"apple": _apple}
+def _fireflies(c, st, L, t):
+    """Рой светлячков вокруг (x, y): amount 0..1 — сколько их, radius — размер роя, rise — улетают вверх."""
+    amount = float(st.get("amount", 1.0))
+    if amount <= 0.01:
+        return
+    radius = float(st.get("radius", 260))
+    rise = float(st.get("rise", 0.0))
+    n = int(40 * amount)
+    rnd = random.Random(7)
+    for i in range(40):
+        ph, sp, rr = rnd.uniform(0, 6.28), rnd.uniform(0.3, 0.9), rnd.uniform(0.2, 1.0)
+        if i >= n:
+            continue
+        x = math.cos(t * sp + ph) * radius * rr + math.sin(t * 1.7 + ph * 2) * 30
+        y = math.sin(t * sp * 1.3 + ph) * radius * 0.55 * rr - rise * (0.5 + rr) * 600
+        blink = 0.55 + 0.45 * math.sin(t * rnd.uniform(3, 6) + ph)
+        c.drawCircle(x, y, 30, skx.fill("#C8F040", 0.35 * blink, blur=16, blend=skia.BlendMode.kPlus))
+        c.drawCircle(x, y, 5, skx.fill("#E8F870", 0.9 * blink, blend=skia.BlendMode.kPlus))
+
+
+PROPS = {"apple": _apple, "fireflies": _fireflies}
 
 
 def load_character(cid):
@@ -46,7 +66,8 @@ class Prop:
     def __init__(self, spec):
         self.id = spec.get("id", spec["type"])
         self.type = spec["type"]
-        start = {"x": 960, "y": 540, "rot": 0.0, "scale": 1.0, "visible": 1, "z": 0, "sparkle": 0}
+        start = {"x": 960, "y": 540, "rot": 0.0, "scale": 1.0, "visible": 1, "z": 0, "sparkle": 0,
+                 "amount": 1.0, "radius": 260, "rise": 0.0}
         start.update(spec.get("start", {}))
         self.track = Track(spec.get("keys", []), start)
         self.events = spec.get("sounds", [])
@@ -86,6 +107,8 @@ class Scene:
         last_line = max([end for a in self.actors for (_, end, *_r) in a.lines] + [0])
         self.duration = float(spec.get("duration", last_line + 1.0))
         self.surface = skia.Surface(width, height)
+        tint = spec.get("actor_tint")  # {color: "#6A7BC8", alpha: 0.45} — освещение сцены на героях (ночь, закат)
+        self.tint = skx.rgb(skx.mix("#FFFFFF", tint["color"], float(tint.get("alpha", 0.4)))) if tint else None
 
     def frame(self, t: float) -> np.ndarray:
         c = self.surface.getCanvas()
@@ -105,7 +128,13 @@ class Scene:
         drawables += [((float(pr.track.value("z", t) or 0), float(pr.track.value("y", t))), "prop", pr) for pr in self.props]
         for _, kind, obj in sorted(drawables, key=lambda d: d[0]):
             if kind == "actor":
-                obj[0].c.draw(c, obj[1])
+                if self.tint is not None:
+                    c.saveLayer(None, None)
+                    obj[0].c.draw(c, obj[1])
+                    c.drawPaint(skia.Paint(Color=self.tint, BlendMode=skia.BlendMode.kModulate))
+                    c.restore()
+                else:
+                    obj[0].c.draw(c, obj[1])
             else:
                 obj.draw(c, t, self.light)
         c.restore()

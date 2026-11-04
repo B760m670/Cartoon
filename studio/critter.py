@@ -319,6 +319,13 @@ class Critter:
             c.drawPath(arc, stroke(shade(lk.fur, -0.9), R * 0.055))
             self._brow(c, pose, ex, ey, w, h, R, side)
             return
+        if pose.blink >= 0.85:
+            # закрытые глаза: мягкая дуга вниз с ресничкой
+            arc = skx.smooth_open([(ex - w * 1.05, ey + h * 0.05), (ex, ey + h * 0.42), (ex + w * 1.05, ey + h * 0.05)])
+            c.drawPath(arc, stroke("#24151A", R * 0.045))
+            c.drawPath(skx.smooth_open([(ex + side * w * 0.95, ey + h * 0.12), (ex + side * w * 1.35, ey - h * 0.02)]), stroke("#24151A", R * 0.03))
+            self._brow(c, pose, ex, ey, w, h, R, side)
+            return
         eye = oval(ex, ey, w, h)
         c.drawPath(eye, fill("#FFFFFF"))
         c.save()

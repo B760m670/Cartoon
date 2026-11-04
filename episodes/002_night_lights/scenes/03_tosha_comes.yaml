@@ -1,0 +1,29 @@
+# Тоша приходит
+location: night_meadow
+actor_tint: {color: "#5868B8", alpha: 0.42}
+duration: 9
+camera:
+  - {t: 0, x: 980, y: 600, zoom: 1.15}
+  - {t: 9, x: 1040, y: 620, zoom: 1.25, ease: in_out}
+actors:
+  - character: busya
+    start: {x: 1200, y: 960, turn: 0.15, scale: 0.92, mood: sad, look_y: 0.4, tilt: 8, arm_l: [6, 30], arm_r: [6, 30], facing: -1}
+    keys:
+      - {t: 1.4, look_y: 0.4, tilt: 8, turn: 0.15}
+      - {t: 1.9, look_y: 0, tilt: 0, turn: 0.45, ease: out}
+    actions:
+      - {t: 0, do: mood, mood: sad}
+      - {t: 1.9, do: mood, mood: surprised}
+      - {t: 3.9, do: mood, mood: happy}
+      - {t: 4.0, do: say, text: "Tosha! You came!"}
+      - {t: 4.0, do: jump, height: 60, duration: 0.6}
+  - character: tosha
+    start: {x: 300, y: 950, turn: 0.4}
+    keys:
+      - {t: 0.2, x: 300}
+      - {t: 2.8, x: 900, ease: out}
+    actions:
+      - {t: 1.5, do: say, text: "Busya? Don't worry, I'm here!"}
+      - {t: 5.6, do: mood, mood: excited}
+      - {t: 5.8, do: say, text: "Want to see something magic? Watch!"}
+      - {t: 5.9, do: wave, duration: 1.4}

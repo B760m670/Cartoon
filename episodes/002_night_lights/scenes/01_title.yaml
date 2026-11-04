@@ -1,0 +1,12 @@
+type: title
+location: night_meadow
+duration: 4.5
+text: "Tosha & Busya"
+subtitle: "The Night Lights"
+fade_in: 0.8
+fade_out: 0.6
+camera:
+  - {t: 0, x: 700, y: 380, zoom: 1.12}
+  - {t: 4.5, x: 860, y: 460, zoom: 1.02, ease: in_out}
+props:
+  - {type: fireflies, start: {x: 960, y: 760, amount: 0.35, radius: 700, z: 5}}
