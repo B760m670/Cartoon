@@ -134,7 +134,14 @@ class Scene:
         self.kind = spec.get("type", "scene")
         self.fps = episode.get("fps", config.FPS)
         self.W, self.H = width, height
-        self.k = width / config.W
+        # вертикальный кадр (Shorts 9:16): мир масштабируется по высоте, видна центральная полоса
+        self.vertical = height > width
+        self.k = height / config.H if self.vertical else width / config.W
+        self.view_w = width / self.k          # видимая ширина в единицах мира
+        self.off_x = (self.view_w - config.W) / 2
+        vspec = spec.get("vertical", {})
+        self.v_camera = Track(vspec["camera"], {"x": 960, "y": 540, "zoom": 1.0, "shake": 0.0}) if vspec.get("camera") else None
+        self.v_zoom = float(vspec.get("zoom", 0.82))
         lspec = spec.get("light", {})
         self.light = skx.Light(**lspec) if lspec else skx.Light()
         self.loc = location.load(spec["location"], self.light) if spec.get("location") else None
@@ -161,9 +168,22 @@ class Scene:
         self.post.begin(c)
         c.save()
         c.scale(self.k, self.k)
+        c.translate(self.off_x, 0)
         st = self.camera.state(t)
         sh = float(st["shake"])
-        cam = location.Camera(float(st["x"]) + math.sin(t * 47) * sh, float(st["y"]) + math.cos(t * 53) * sh, float(st["zoom"]))
+        cx, cy, cz = float(st["x"]), float(st["y"]), float(st["zoom"])
+        if self.vertical:
+            if self.v_camera:
+                vs = self.v_camera.state(t)
+                cx, cy, cz = float(vs["x"]), float(vs["y"]), float(vs["zoom"])
+            else:
+                # держим героев в узком кадре: середина между ними + чуть отъезжаем
+                xs = [float(a.track.value("x", t)) for a in self.actors]
+                if xs:
+                    cx = 0.35 * cx + 0.65 * (min(xs) + max(xs)) / 2
+                cz = cz * self.v_zoom
+                cy = 0.4 * cy + 0.6 * 660   # герои в нижней трети, но выше панели YouTube
+        cam = location.Camera(cx + math.sin(t * 47) * sh, cy + math.cos(t * 53) * sh, cz)
         if self.loc:
             self.loc.env = {k: self.env.value(k, t) for k in set(self.env.props) | set(self.env.defaults)}
             self.loc.draw_layers(c, cam, t, "back")
@@ -208,19 +228,40 @@ class Scene:
         return skx.surface_to_rgb(self.surface)
 
     def _subtitle(self, c, text, who):
-        size = 46
-        w = skx.text_width(text, size)
-        x, y = config.W / 2, config.H - 70
-        c.drawRRect(skia.RRect.MakeRectXY(skia.Rect.MakeXYWH(x - w / 2 - 28, y - 52, w + 56, 74), 22, 22), skx.fill("#0E0A1A", 0.45))
-        skx.text(c, text, x, y, size, "#FFFFFF", "#1A1030", 7)
+        x = config.W / 2
+        if not self.vertical:
+            size = 46
+            lines = [text]
+            y0 = config.H - 70
+        else:
+            # Shorts: крупнее, переносим по словам, выше нижней панели YouTube
+            size = 40
+            maxw = self.view_w * 0.86
+            lines, cur = [], ""
+            for word in text.split():
+                trial = (cur + " " + word).strip()
+                if cur and skx.text_width(trial, size) > maxw:
+                    lines.append(cur)
+                    cur = word
+                else:
+                    cur = trial
+            lines.append(cur)
+            y0 = config.H * 0.24
+        for i, line in enumerate(lines):
+            y = y0 + i * size * (1.62 if self.vertical else 1.2)
+            w = skx.text_width(line, size)
+            c.drawRRect(skia.RRect.MakeRectXY(skia.Rect.MakeXYWH(x - w / 2 - 24, y - size * 1.12, w + 48, size * 1.6), 20, 20),
+                        skx.fill("#0E0A1A", 0.45))
+            skx.text(c, line, x, y, size, "#FFFFFF", "#1A1030", 7)
 
     def _title(self, c, t):
         title = self.spec.get("text", "")
         sub = self.spec.get("subtitle", "")
         from cartoon import easing
         p = easing.back_out(min(1.0, max(0.0, (t - 0.3) / 0.9)))
-        size = 150 * max(p, 0.01)
-        c.drawRect(skia.Rect(0, 0, config.W, config.H), skx.fill("#120A2A", 0.25))
+        base = min(150, 150 * self.view_w * 0.9 / max(1, skx.text_width(title, 150)))
+        size = base * max(p, 0.01)
+        c.drawRect(skia.Rect(-self.off_x, 0, config.W + self.off_x, config.H), skx.fill("#120A2A", 0.25))
         y = config.H * 0.42
         glow = skx.fill("#FFD36E", 0.55, blur=28)
         font = skia.Font(skx.typeface(True), size)
@@ -229,7 +270,8 @@ class Scene:
         skx.text(c, title, config.W / 2, y, size, "#FFFFFF", "#3A1B5C", 16)
         if sub and t > 1.0:
             a = min(1.0, (t - 1.0) / 0.6)
-            skx.text(c, sub, config.W / 2, y + 120, 64, "#FFE9A8", "#3A1B5C", 10, a=a)
+            ss = min(64, 64 * self.view_w * 0.9 / max(1, skx.text_width(sub, 64)))
+            skx.text(c, sub, config.W / 2, y + base * 0.8, ss, "#FFE9A8", "#3A1B5C", 10, a=a)
 
     def audio(self) -> np.ndarray:
         n = int(round(self.duration * config.AUDIO_RATE))

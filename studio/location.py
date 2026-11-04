@@ -145,6 +145,7 @@ def light_rays(c, t, origin, color="#FFF3C4", n=6, alpha=0.12, seed=1, W=config.
     m = c.getTotalMatrix()
     c.save()
     c.resetMatrix()
+    c.translate(m.getTranslateX(), m.getTranslateY())
     k = m.getScaleX()
     skx.blend_upscaled(c, small.makeImageSnapshot(), int(W * k), int(H * k), skia.BlendMode.kScreen)
     c.restore()

@@ -75,3 +75,12 @@ thumbnail: {scene: 04_puddles, t: 2.7, title: ["RAINY", "DAY!"], color: "#6FC3FF
 ```
 
 `python -m studio thumbnail 003_rainy_day` writes `output/<ep>/<ep>_thumbnail.jpg` (1280×720, ~130 KB). It uses a frame without subtitles, crops with `zoom`/`focus` and adds the title, the episode badge and the show name. Put the title on the side away from the characters.
+
+## Shorts (9:16)
+
+`python -m studio render <ep> --vertical` renders the same scenes at 1080×1920 into `output/<ep>/<ep>_shorts.mp4`. `still ... --vertical` works too.
+
+- The world is scaled to the frame height, so a ~607-unit-wide strip is visible.
+- By default the camera centres between the actors, zooms out to 0.82 and keeps them in the lower part of the frame.
+- Subtitles move to the upper quarter and wrap, so they stay clear of the YouTube Shorts buttons.
+- To override per scene: `vertical: {camera: [...], zoom: 0.82}`.

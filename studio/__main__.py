@@ -3,6 +3,7 @@
   python -m studio render 001_big_red_apple            — эпизод целиком (Full HD)
   python -m studio render 001_big_red_apple --preview  — быстро, 960x540
   python -m studio render 001_big_red_apple -s 02_the_apple
+  python -m studio render 001_big_red_apple --vertical — Shorts 9:16 (1080x1920)
   python -m studio still 001_big_red_apple 02_the_apple 3.5   — кадр в PNG
   python -m studio thumbnail 001_big_red_apple         — обложка YouTube 1280x720 (раздел thumbnail в episode.yaml)
 """
@@ -20,11 +21,13 @@ def main(argv=None):
     r.add_argument("-s", "--scene", action="append")
     r.add_argument("--preview", action="store_true")
     r.add_argument("-j", "--jobs", type=int)
+    r.add_argument("--vertical", action="store_true", help="9:16 для Shorts")
     s = sub.add_parser("still")
     s.add_argument("episode")
     s.add_argument("scene")
     s.add_argument("time", type=float)
     s.add_argument("--preview", action="store_true")
+    s.add_argument("--vertical", action="store_true")
     th = sub.add_parser("thumbnail")
     th.add_argument("episode", nargs="+")
     a = p.parse_args(argv)
@@ -34,9 +37,9 @@ def main(argv=None):
             render_thumbnail(e)
         return
     if a.cmd == "render":
-        render_episode(a.episode, a.scene, a.preview, a.jobs)
+        render_episode(a.episode, a.scene, a.preview, a.jobs, a.vertical)
     else:
-        render_still(a.episode, a.scene, a.time, a.preview)
+        render_still(a.episode, a.scene, a.time, a.preview, a.vertical)
 
 
 if __name__ == "__main__":

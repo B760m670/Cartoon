@@ -32,19 +32,20 @@ def load_episode(name):
     return d, spec, files
 
 
-def size_for(preview):
-    return (config.W // 2, config.H // 2) if preview else (config.W, config.H)
+def size_for(preview, vertical=False):
+    w, h = (config.H, config.W) if vertical else (config.W, config.H)   # 9:16 — 1080x1920
+    return (w // 2, h // 2) if preview else (w, h)
 
 
-def build_scene(ep_dir: Path, spec: dict, path: Path, preview: bool) -> Scene:
-    w, h = size_for(preview)
+def build_scene(ep_dir: Path, spec: dict, path: Path, preview: bool, vertical=False) -> Scene:
+    w, h = size_for(preview, vertical)
     cache = config.OUTPUT_DIR / ep_dir.name / "voice"
     return Scene(path.stem, yaml.safe_load(path.read_text(encoding="utf-8")), spec, w, h, cache)
 
 
-def render_scene(ep_name, scene_path, out_dir, preview):
+def render_scene(ep_name, scene_path, out_dir, preview, vertical=False):
     ep_dir, spec, _ = load_episode(ep_name)
-    scene = build_scene(ep_dir, spec, Path(scene_path), preview)
+    scene = build_scene(ep_dir, spec, Path(scene_path), preview, vertical)
     fps = spec.get("fps", config.FPS)
     out = Path(out_dir) / f"{scene.id}.mp4"
     frames = int(round(scene.duration * fps))
@@ -64,26 +65,26 @@ def render_scene(ep_name, scene_path, out_dir, preview):
     return str(out), frames, time.time() - t0
 
 
-def render_episode(name, only=None, preview=False, jobs=None):
+def render_episode(name, only=None, preview=False, jobs=None, vertical=False):
     ep_dir, spec, files = load_episode(name)
     if only:
         files = [f for f in files if f.stem in only]
     out_root = config.OUTPUT_DIR / ep_dir.name
-    scenes_dir = out_root / ("preview" if preview else "scenes")
+    scenes_dir = out_root / (("v_" if vertical else "") + ("preview" if preview else "scenes"))
     scenes_dir.mkdir(parents=True, exist_ok=True)
     jobs = jobs or min(len(files), os.cpu_count() or 1)
     title = spec.get("title", ep_dir.name)
-    print(f"▶ {title}: {len(files)} сцен, {'превью' if preview else 'Full HD'}, потоков {jobs}")
+    print(f"▶ {title}: {len(files)} сцен, {'превью' if preview else 'Full HD'}{' 9:16' if vertical else ''}, потоков {jobs}")
     started = time.time()
     with ProcessPoolExecutor(max_workers=jobs) as pool:
-        futs = [pool.submit(render_scene, str(ep_dir), str(f), str(scenes_dir), preview) for f in files]
+        futs = [pool.submit(render_scene, str(ep_dir), str(f), str(scenes_dir), preview, vertical) for f in files]
         parts = []
         for f in futs:
             out, frames, secs = f.result()
             parts.append(Path(out))
             print(f"  ✓ {Path(out).name}: {frames} кадров за {secs:.1f} с")
 
-    silent = out_root / "_video.mp4"
+    silent = out_root / ("_video_v.mp4" if vertical else "_video.mp4")
     encoder.concat(parts, silent)
     mix = np.concatenate([np.load(p.with_suffix(".mix.npy")) for p in parts])
     voice = np.concatenate([np.load(p.with_suffix(".voice.npy")) for p in parts])
@@ -95,9 +96,9 @@ def render_episode(name, only=None, preview=False, jobs=None):
         mix = mix + bed[: len(mix)] * float(mspec.get("volume", 0.22))
     peak = np.max(np.abs(mix)) or 1
     mix = mix / max(peak, 1.0) * 0.97
-    wav = out_root / "_audio.wav"
+    wav = out_root / ("_audio_v.wav" if vertical else "_audio.wav")
     write_wav(wav, mix)
-    suffix = "_preview" if preview else ""
+    suffix = ("_shorts" if vertical else "") + ("_preview" if preview else "")
     final = out_root / f"{ep_dir.name}{suffix}.mp4"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(silent), "-i", str(wav), "-map", "0:v", "-map", "1:a",
                     "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-shortest", "-movflags", "+faststart", str(final)],
@@ -108,12 +109,12 @@ def render_episode(name, only=None, preview=False, jobs=None):
     return final
 
 
-def render_still(name, scene_id, t, preview=False):
+def render_still(name, scene_id, t, preview=False, vertical=False):
     ep_dir, spec, files = load_episode(name)
     match = [f for f in files if f.stem == scene_id]
     if not match:
         raise ValueError(f"Нет сцены {scene_id}. Есть: {', '.join(f.stem for f in files)}")
-    scene = build_scene(ep_dir, spec, match[0], preview)
+    scene = build_scene(ep_dir, spec, match[0], preview, vertical)
     fps = spec.get("fps", config.FPS)
     # прогоняем кадры до t, чтобы пружины/состояния были честными
     last = int(t * fps)
@@ -122,7 +123,7 @@ def render_still(name, scene_id, t, preview=False):
             a.pose(i / fps)
     arr = scene.frame(last / fps)
     from PIL import Image
-    out = config.OUTPUT_DIR / ep_dir.name / "stills" / f"{scene_id}_{t:.2f}.png"
+    out = config.OUTPUT_DIR / ep_dir.name / "stills" / f"{scene_id}_{t:.2f}{'_v' if vertical else ''}.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(arr).save(out)
     print(f"✔ {out}")
