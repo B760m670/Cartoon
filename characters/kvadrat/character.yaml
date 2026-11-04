@@ -1,0 +1,13 @@
+name: Квадрат
+shape: square
+size: 66
+color: "#4FC3F7"
+outline: "#0D3B66"
+limbs: "#0D3B66"
+belly: "#B3E5FC"
+cheeks: "#FF8FAB"
+eye_size: 0.25
+voice_pitch: 330
+hat:
+  type: bow
+  color: "#E53935"

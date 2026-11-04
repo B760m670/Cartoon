@@ -1,0 +1,14 @@
+# Внешность персонажа. Все параметры — см. docs/characters.md
+name: Круг
+shape: circle          # circle | square | triangle
+size: 70               # радиус тела в логических пикселях (холст 1280x720)
+color: "#FF8A3D"
+outline: "#5A2E0E"
+limbs: "#5A2E0E"
+belly: "#FFC08A"
+cheeks: "#FF5E7E"
+eye_size: 0.27
+voice_pitch: 620       # высота «голоса» (Гц) для писков-реплик
+hat:
+  type: cap            # cap | bow | party
+  color: "#3D5AFE"

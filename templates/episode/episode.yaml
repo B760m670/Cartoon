@@ -1,0 +1,8 @@
+title: "Новый мультик"
+fps: 24
+width: 1280
+height: 720
+scenes:
+  - 01_zastavka.yaml
+  - 02_scena.yaml
+# music: theme.mp3

@@ -1,0 +1,26 @@
+# Встреча на лугу
+duration: 9
+background: {type: meadow, clouds: 5, seed: 11}
+
+actors:
+  - character: krug
+    start: {x: -120, y: 610}
+    keyframes:
+      - {t: 0.3, x: -120}
+      - {t: 2.0, x: 440, ease: out}
+    actions:
+      - {t: 2.1, type: wave, duration: 1.2}
+      - {t: 2.2, type: say, text: "Привет! Я Круг!"}
+      - {t: 6.5, type: say, text: "Давай дружить!", duration: 1.6}
+      - {t: 6.3, type: jump, height: 110, duration: 0.6}
+
+  - character: kvadrat
+    start: {x: 1420, y: 630, mood: neutral}
+    keyframes:
+      - {t: 1.6, x: 1420}
+      - {t: 3.8, x: 840, ease: in_out}
+    actions:
+      - {t: 4.2, type: say, text: "Хм. А я Квадрат."}
+      - {t: 7.6, type: mood, mood: happy}
+      - {t: 7.7, type: jump, height: 70, duration: 0.6}
+      - {t: 7.7, type: say, text: "Ну ладно!", duration: 1.2}
