@@ -1,0 +1,37 @@
+# Солнце и радуга
+location: meadow
+duration: 11
+fade_in: 0.6
+fade_out: 1.4
+env:
+  start: {rainbow: 0}
+  keys:
+    - {t: 0.6, rainbow: 0}
+    - {t: 3.6, rainbow: 1, ease: out}
+camera:
+  - {t: 0, x: 980, y: 470, zoom: 1.05}
+  - {t: 4.0, x: 980, y: 520, zoom: 1.05}
+  - {t: 11, x: 1000, y: 600, zoom: 1.22, ease: in_out}
+props:
+  - {type: puddle, start: {x: 980, y: 975, z: -1, sky: "#BFE2FA"}}
+actors:
+  - character: tosha
+    start: {x: 820, y: 950, turn: 0.45, mood: excited, look_y: -0.8}
+    keys:
+      - {t: 5.0, look_y: -0.8}
+      - {t: 5.6, look_y: 0, ease: in_out}
+    actions:
+      - {t: 1.6, do: say, text: "Wow! A rainbow!"}
+      - {t: 1.6, do: jump, height: 70, duration: 0.6}
+      - {t: 5.6, do: mood, mood: happy}
+      - {t: 8.2, do: say, text: "See you next time!"}
+      - {t: 8.2, do: wave, duration: 2.2}
+  - character: busya
+    start: {x: 1120, y: 960, turn: 0.45, scale: 0.92, facing: -1, mood: excited, look_y: -0.8}
+    keys:
+      - {t: 3.6, look_y: -0.8, turn: 0.45}
+      - {t: 4.2, look_y: 0, turn: 0.3, ease: in_out}
+    actions:
+      - {t: 4.4, do: mood, mood: happy}
+      - {t: 4.5, do: say, text: "After the rain, there's always a rainbow."}
+      - {t: 8.4, do: wave, duration: 2.0, arm: l}

@@ -1,0 +1,35 @@
+# Прибегает Буся
+location: meadow
+duration: 10
+camera:
+  - {t: 0, x: 1060, y: 620, zoom: 1.2}
+  - {t: 10, x: 1020, y: 640, zoom: 1.28, ease: in_out}
+props:
+  - {type: apple, id: apple, start: {x: 1400, y: 228, scale: 1.25, sparkle: 1}}
+actors:
+  - character: tosha
+    mood: sad
+    start: {x: 1170, y: 950, turn: 0.2, look_y: 0.6, tilt: 10, mood: sad, arm_l: [4, 4], arm_r: [4, 4], facing: 1}
+    keys:
+      - {t: 2.6, facing: 1, look_y: 0.6, tilt: 10}
+      - {t: 2.8, facing: -1, look_y: 0, look_x: 0.3, tilt: 4, turn: 0.4}
+      - {t: 5.0, look_y: -0.7, tilt: -6}
+      - {t: 6.0, look_y: 0, tilt: 4}
+    actions:
+      - {t: 0, do: mood, mood: sad}
+      - {t: 4.7, do: say, text: "I can't reach the apple."}
+      - {t: 8.4, do: mood, mood: happy}
+      - {t: 8.6, do: say, text: "Okay!"}
+  - character: busya
+    start: {x: 380, y: 960, turn: 0.4, scale: 0.92}
+    keys:
+      - {t: 0.4, x: 380}
+      - {t: 2.4, x: 860, ease: out}
+    actions:
+      - {t: 2.6, do: say, text: "Hi, Tosha! Why so sad?"}
+      - {t: 2.6, do: mood, mood: surprised}
+      - {t: 4.4, do: mood, mood: neutral}
+      - {t: 6.2, do: mood, mood: excited}
+      - {t: 6.2, do: jump, height: 90, duration: 0.7}
+      - {t: 6.4, do: say, text: "I have an idea! Hold still!"}
+      - {t: 8.4, do: mood, mood: happy}

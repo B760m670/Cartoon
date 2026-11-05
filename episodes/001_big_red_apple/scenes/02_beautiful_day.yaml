@@ -1,0 +1,23 @@
+# Тоша идёт по лугу и замечает яблоко
+location: meadow
+duration: 8
+camera:
+  - {t: 0, x: 700, y: 560, zoom: 1.15}
+  - {t: 3.6, x: 900, y: 560, zoom: 1.15, ease: in_out}
+  - {t: 5.0, x: 1000, y: 470, zoom: 1.05, ease: in_out}
+  - {t: 8, x: 1080, y: 430, zoom: 1.0, ease: in_out}
+props:
+  - {type: apple, id: apple, start: {x: 1400, y: 228, scale: 1.25, sparkle: 1}}
+actors:
+  - character: tosha
+    start: {x: 160, y: 950, turn: 0.35}
+    keys:
+      - {t: 0.2, x: 160}
+      - {t: 3.4, x: 860, ease: out}
+      - {t: 4.6, turn: 0.35, look_y: 0, tilt: 0}
+      - {t: 5.3, turn: 0.55, look_y: -0.9, look_x: 0.6, tilt: -10, ease: out}
+    actions:
+      - {t: 1.2, do: say, text: "What a beautiful day!"}
+      - {t: 5.4, do: mood, mood: surprised}
+      - {t: 5.6, do: say, text: "Whoa... look at that apple!"}
+      - {t: 7.2, do: mood, mood: excited}

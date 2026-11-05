@@ -1,0 +1,12 @@
+type: title
+location: rainy_meadow
+duration: 4.5
+text: "Tosha & Busya"
+subtitle: "The Rainy Day"
+fade_in: 0.8
+fade_out: 0.5
+camera:
+  - {t: 0, x: 800, y: 420, zoom: 1.1}
+  - {t: 4.5, x: 900, y: 480, zoom: 1.02, ease: in_out}
+sounds:
+  - {t: 0, kind: rain, dur: 4.5, volume: 0.5}

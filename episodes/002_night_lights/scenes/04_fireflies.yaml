@@ -1,0 +1,39 @@
+# Светлячки
+location: night_meadow
+actor_tint: {color: "#5868B8", alpha: 0.36}
+duration: 9
+camera:
+  - {t: 0, x: 1040, y: 640, zoom: 1.25}
+  - {t: 2.0, x: 1040, y: 640, zoom: 1.25}
+  - {t: 9, x: 1060, y: 520, zoom: 1.02, ease: in_out}
+props:
+  - id: swarm
+    type: fireflies
+    start: {x: 1050, y: 860, amount: 0, radius: 120, z: 5}
+    keys:
+      - {t: 1.3, amount: 0, radius: 120, y: 900}
+      - {t: 3.5, amount: 1, radius: 420, y: 700, ease: out}
+      - {t: 9, amount: 1, radius: 520, y: 620, ease: in_out}
+actors:
+  - character: tosha
+    start: {x: 900, y: 950, turn: 0.45, mood: excited}
+    actions:
+      - {t: 0.6, do: jump, height: 120, duration: 0.8}
+      - {t: 1.3, do: sfx, kind: chime, volume: 0.8}
+      - {t: 2.6, do: mood, mood: happy}
+      - {t: 6.2, do: say, text: "See? The night has its own lights."}
+    keys:
+      - {t: 2.4, look_y: 0}
+      - {t: 3.0, look_y: -0.7, look_x: 0.3}
+      - {t: 6.0, look_y: -0.5, look_x: 0.6, turn: 0.5}
+  - character: busya
+    start: {x: 1200, y: 960, turn: 0.45, scale: 0.92, facing: -1, mood: happy}
+    keys:
+      - {t: 1.6, look_y: 0}
+      - {t: 2.2, look_y: -0.8, look_x: 0.2}
+    actions:
+      - {t: 1.8, do: mood, mood: surprised}
+      - {t: 3.2, do: mood, mood: excited}
+      - {t: 3.3, do: say, text: "Fireflies! They're so pretty!"}
+      - {t: 3.3, do: jump, height: 80, duration: 0.7}
+      - {t: 5.8, do: mood, mood: happy}

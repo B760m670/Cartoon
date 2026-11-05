@@ -1,0 +1,28 @@
+# Радуются и делят яблоко
+location: meadow
+duration: 7.5
+fade_out: 1.3
+camera:
+  - {t: 0, x: 1080, y: 650, zoom: 1.3}
+  - {t: 3.8, x: 1080, y: 640, zoom: 1.3}
+  - {t: 7.5, x: 1080, y: 470, zoom: 1.0, ease: in_out}
+props:
+  - {type: apple, id: apple, start: {x: 1085, y: 962, rot: 260, scale: 1.25, z: 2}}
+actors:
+  - character: busya
+    start: {x: 930, y: 960, turn: 0.45, scale: 0.92, facing: 1, mood: happy}
+    actions:
+      - {t: 0.5, do: say, text: "We did it together!"}
+      - {t: 3.3, do: mood, mood: excited}
+      - {t: 3.2, do: jump, height: 110, duration: 0.8}
+      - {t: 3.4, do: say, text: "Hooray!"}
+  - character: tosha
+    start: {x: 1240, y: 950, turn: 0.45, facing: -1, mood: happy}
+    keys:
+      - {t: 1.6, blush: 0}
+      - {t: 2.0, blush: 1}
+    actions:
+      - {t: 1.8, do: say, text: "Let's share it!"}
+      - {t: 1.9, do: wave, duration: 1.2}
+      - {t: 3.25, do: mood, mood: excited}
+      - {t: 3.3, do: jump, height: 130, duration: 0.85}

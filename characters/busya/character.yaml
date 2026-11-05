@@ -1,0 +1,18 @@
+# Буся — зайчиха.
+name: Буся
+ears: long
+snout: bunny
+tail: puff
+fur: "#F3EEF7"
+fur2: "#FFFFFF"
+inner_ear: "#FFB3C7"
+eye: "#3B2A6B"
+eye2: "#9C7BEA"
+nose: "#FF7FA6"
+cheek: "#FF9EBB"
+head_r: 100
+body_w: 80
+body_h: 88
+accessory: {type: bow, color: "#FF5C8A"}
+voice: {kokoro: af_bella, pitch: 1.1, speed: 1.05}
+gait: hop

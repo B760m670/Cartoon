@@ -1,0 +1,34 @@
+# Тоша приходит под листом-зонтиком
+location: rainy_meadow
+actor_tint: {color: "#8C9AB8", alpha: 0.32}
+duration: 11.5
+camera:
+  - {t: 0, x: 960, y: 560, zoom: 1.05}
+  - {t: 11.5, x: 1020, y: 600, zoom: 1.18, ease: in_out}
+sounds:
+  - {t: 0, kind: rain, dur: 11.5, volume: 0.5}
+props:
+  - {type: leaf, follow: tosha, start: {x: 62, y: -300, z: -0.5}}
+actors:
+  - character: busya
+    start: {x: 1250, y: 960, turn: 0.15, scale: 0.92, mood: sad, look_y: 0.5, tilt: 10, facing: -1, arm_l: [6, 30], arm_r: [6, 30]}
+    keys:
+      - {t: 1.2, look_y: 0.5, tilt: 10, turn: 0.15}
+      - {t: 1.8, look_y: 0, tilt: 0, turn: 0.45, ease: out}
+    actions:
+      - {t: 1.8, do: mood, mood: surprised}
+      - {t: 5.2, do: mood, mood: happy}
+      - {t: 5.3, do: say, text: "Ha ha! You look so funny, Tosha!"}
+      - {t: 5.3, do: jump, height: 40, duration: 0.5}
+  - character: tosha
+    start: {x: 250, y: 950, turn: 0.4, arm_r: [168, -10], mood: happy}
+    keys:
+      - {t: 0.2, x: 250}
+      - {t: 3.0, x: 880, ease: out}
+    actions:
+      - {t: 1.4, do: say, text: "Who says we can't?"}
+      - {t: 3.3, do: mood, mood: excited}
+      - {t: 3.3, do: say, text: "Look! I have a leaf umbrella!"}
+      - {t: 7.6, do: mood, mood: excited}
+      - {t: 7.8, do: say, text: "Come on! Let's jump in the puddles!"}
+      - {t: 7.8, do: jump, height: 50, duration: 0.5}
